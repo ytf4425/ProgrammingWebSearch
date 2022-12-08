@@ -17,12 +17,8 @@ public class Graph {
     }
 
     void initData() {
-        ArrayList<API> vertexList = new ArrayList<>();
-        for (API api : data.getAPImap().values()) {
-            vertexList.add(api);
-        }
-        API[] vertices = vertexList.toArray(new API[vertexList.size()]);
-        vertexList = null;
+        ArrayList<API> vertexList = new ArrayList<>(data.getAPImap().values());
+        API[] vertices = vertexList.toArray(new API[0]);
 
         this.vertices = vertices;
         for (int i = 0; i < vertices.length; i++) {

@@ -23,12 +23,12 @@ import java.util.Map;
 
 public class ReadCSV {
     public static <V extends ProgrammableWeb> void readContent(InputStream input, Map<String, V> map, Class<V> vClass) {
-        //以"\t"作为解析的分隔符
+        // 以"\t"作为解析的分隔符
         CSVParser csvParser = new CSVParserBuilder().withSeparator('\t').build();
         try (CSVReader readerCsv = new CSVReaderBuilder(new InputStreamReader(input)).withCSVParser(csvParser).withSkipLines(1).build()) {
             String[] line;
             while ((line = readerCsv.readNext()) != null) {
-                //Arrays.asList(lines).forEach(System.out::println);
+                // Arrays.asList(lines).forEach(System.out::println);
                 Object[] methodArgs = new Object[]{line};
                 V api = vClass.getDeclaredConstructor(line.getClass()).newInstance(methodArgs);
                 map.put(api.getIndex(), api);
@@ -40,7 +40,7 @@ public class ReadCSV {
     }
 
     public static void readM_a(InputStream input, Map<String, Mashup> Mashupmap, Map<String, API> APImap) {
-        //以"\t"作为解析的分隔符
+        // 以"\t"作为解析的分隔符
         CSVParser csvParser = new CSVParserBuilder().withSeparator('\t').build();
         try (CSVReader readerCsv = new CSVReaderBuilder(new InputStreamReader(input)).withCSVParser(csvParser).withSkipLines(1).build()) {
             String[] lines;

@@ -44,8 +44,6 @@ public class InvertedIndex {
 
     public Set<API> search(String keyword, type t) {
         Map<String, Set<API>> invertindex = getInvertindex(t);
-
-        Set<API> apis = invertindex.getOrDefault(keyword, new HashSet<>());
-        return apis;
+        return invertindex.getOrDefault(keyword, new HashSet<>());
     }
 }

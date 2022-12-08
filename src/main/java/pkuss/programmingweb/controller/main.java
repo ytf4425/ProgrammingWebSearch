@@ -12,16 +12,16 @@ import java.util.Set;
 
 @RestController
 public class main {
-    InvertedIndex ii = new InvertedIndex();
-    Data data = new Data(ii);
-    Graph g = new Graph(data);
+    InvertedIndex invertedIndex = new InvertedIndex();
+    Data data = new Data(invertedIndex);
+    Graph graph = new Graph(data);
 
     public main() throws IOException {
     }
 
 
     @GetMapping("/api/")
-    public Set search(
+    public Set<Set<API>> search(
             @RequestParam(value = "category", required = false) List<String> categorys,
             @RequestParam(value = "keyword", required = false) String keyword
     ) {
@@ -32,10 +32,10 @@ public class main {
             for (int i = 0; i < c.length; i++) {
                 c[i] = c[i].toLowerCase();
             }
-            res = g.search(c, type.API_CATEGORY, ii);
+            res = graph.search(c, type.API_CATEGORY, invertedIndex);
         } else if (keyword != null) {
-            res = new HashSet<Set<API>>();
-            res.add(ii.search(keyword.toLowerCase(), type.API_NAME));
+            res = new HashSet<>();
+            res.add(invertedIndex.search(keyword.toLowerCase(), type.API_NAME));
         }
 
         return res;
