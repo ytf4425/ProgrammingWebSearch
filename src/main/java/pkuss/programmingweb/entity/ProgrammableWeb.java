@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ProgrammableWeb {
-    protected String name; //mashup的名字 mashup:xxx
-    protected String url;//mashup对应url https://xxx
-    protected String category;//mashup对应的类别
+    protected String name;  // mashup的名字 mashup:xxx
+    protected String url;   // mashup对应url https://xxx
+    protected String category;// mashup对应的类别
     protected String st;  // Submit date
     protected String et;  // Corrected dead date
     @JsonIgnore

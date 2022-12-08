@@ -16,6 +16,7 @@ public class Graph {
         initData();
     }
 
+    // 初始化图
     void initData() {
         ArrayList<API> vertexList = new ArrayList<>(data.getAPImap().values());
         API[] vertices = vertexList.toArray(new API[0]);
@@ -41,13 +42,6 @@ public class Graph {
         }
     }
 
-//    Graph(Vertex[] vertices) {
-//        this.vertices = vertices;
-//        for (int i = 0; i < vertices.length; i++) {
-//            vertices[i].setIndex(i);
-//        }
-//        matrix = new int[vertices.length][vertices.length];
-//    }
 
     public void addEdge(API from, API to) {
         addEdge(from.getIndexInGraph(), to.getIndexInGraph());
@@ -110,7 +104,7 @@ public class Graph {
         for (byte[] lines : Matrix) {
             for (int weight : lines) {
 //                if (weight != 0)
-                ret.append(weight + "\t");
+                ret.append(weight).append("\t");
             }
             ret.append("\n");
         }

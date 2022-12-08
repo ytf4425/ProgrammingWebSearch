@@ -10,6 +10,11 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Date: 2022/11/18 16:28
+ * Description: 初始化数据
+ */
+
 @lombok.Data
 public class Data {
     InvertedIndex ii;
