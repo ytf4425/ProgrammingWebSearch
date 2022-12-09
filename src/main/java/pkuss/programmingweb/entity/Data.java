@@ -1,9 +1,7 @@
-package pkuss.programmingweb.controller;
+package pkuss.programmingweb.entity;
 
 import org.springframework.core.io.ClassPathResource;
 import pkuss.programmingweb.dao.ReadCSV;
-import pkuss.programmingweb.entity.API;
-import pkuss.programmingweb.entity.Mashup;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,10 +40,9 @@ public class Data {
             for (Mashup mashup : api.getMashup()) {
                 String mashupCategory = mashup.getCategory();
                 ii.setMap(mashupCategory.toLowerCase(), api, type.MASHUP_CATEGORY);
-
                 String mashupName = mashup.getName();
-                for (String word : mashupName.split(" "))
-                    ii.setMap(word.toLowerCase(), api, type.MASHUP_NAME);
+                //System.out.println(mashupName);
+                ii.setMap(mashupName.toLowerCase(), api, type.MASHUP_NAME);
             }
         }
     }

@@ -4,6 +4,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pkuss.programmingweb.entity.API;
+import pkuss.programmingweb.entity.Data;
+import pkuss.programmingweb.entity.Graph;
+import pkuss.programmingweb.entity.InvertedIndex;
+import sun.font.TrueTypeFont;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -12,6 +16,7 @@ import java.util.Set;
 
 @RestController
 public class main {
+
     InvertedIndex ii = new InvertedIndex();
     Data data = new Data(ii);
     Graph g = new Graph(data);
@@ -21,23 +26,27 @@ public class main {
 
 
     @GetMapping("/api/")
-    public Set search(
+    public Set<API> search(
             @RequestParam(value = "category", required = false) List<String> categorys,
             @RequestParam(value = "keyword", required = false) String keyword
     ) {
-        Set<Set<API>> res = null;
+        Set<API>  res = null;
 
         if (categorys != null) {
             String[] c = categorys.toArray(new String[categorys.size()]);
             for (int i = 0; i < c.length; i++) {
                 c[i] = c[i].toLowerCase();
             }
-            res = g.search(c, type.API_CATEGORY, ii);
+            res = g.searchbyStenierTree(c, ii, true);
         } else if (keyword != null) {
-            res = new HashSet<Set<API>>();
-            res.add(ii.search(keyword.toLowerCase(), type.API_NAME));
+
+            res = new HashSet<API>();
         }
 
         return res;
     }
+
+
 }
+
+
