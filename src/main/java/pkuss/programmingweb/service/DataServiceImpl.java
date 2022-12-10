@@ -24,8 +24,7 @@ public class DataServiceImpl implements DataService{
     public List<ActiveMashup> loadMashupFromJson() throws IOException {
         File file = ResourceUtils.getFile("classpath:static/raw/api_mashup/active_mashups_data.txt");
         String json = FileUtils.readFileToString(file, "UTF-8");
-        List<ActiveMashup> mashupListList = JSON.parseArray(json, ActiveMashup.class);
-        return mashupListList;
+        return JSON.parseArray(json, ActiveMashup.class);
     }
 
 }
