@@ -13,6 +13,7 @@ public class Mashup extends ProgrammableWeb {
     @JsonIgnore
     private List<API> apis = new ArrayList<>(); // 此 Mashup 应用所用的 API
 
+
     public Mashup(String[] line) {
         super(line);
     }

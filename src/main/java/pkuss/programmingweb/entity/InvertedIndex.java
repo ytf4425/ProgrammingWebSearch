@@ -1,16 +1,14 @@
-package pkuss.programmingweb.controller;
+package pkuss.programmingweb.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Repository;
-import pkuss.programmingweb.entity.API;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-enum type {
-    API_NAME, API_CATEGORY, MASHUP_NAME, MASHUP_CATEGORY
-}
 
 @Repository
 public class InvertedIndex {
