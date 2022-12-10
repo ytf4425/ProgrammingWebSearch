@@ -18,11 +18,12 @@ import java.util.List;
  */
 
 @Service
-public class DataServiceImpl implements DataService{
+public class DataServiceImpl implements DataService {
     @Override
     // 从JSON中加载Mashup数据
     public List<ActiveMashup> loadMashupFromJson() throws IOException {
-        File file = ResourceUtils.getFile("classpath:static/raw/api_mashup/active_mashups_data.txt");
+        String sourcePath = "static" + File.separator + "raw" + File.separator + "api_mashup" + File.separator + "active_mashups_data.txt";
+        File file = ResourceUtils.getFile("classpath:" + sourcePath);
         String json = FileUtils.readFileToString(file, "UTF-8");
         return JSON.parseArray(json, ActiveMashup.class);
     }
