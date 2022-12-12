@@ -21,11 +21,11 @@ class ProgrammingWebApplicationTests {
     }
 
     //重要方法，本方法将进行测试命中率
-    //参数说明 maxcategory 限制关键词个数，由于经测试，关键词大于16很可能会爆内存，请勿大于18，不然真的要炸的
-    // mincategory 最少的关键词个数
+    //参数说明 maxtags 限制关键词个数，由于经测试，关键词大于16很可能会爆内存，请勿大于18，不然真的要炸的
+    // mintags 最少的关键词个数
     // min和max 取闭区间
     // isweighted 是否使用有权图
-    void testaccuracy(Graph g,InvertedIndex ii,int mincategory,int maxcategory,boolean isweighted)
+    void testaccuracyUsingTags(Graph g,InvertedIndex ii,int mintags,int maxtags,boolean isweighted)
     {
         //这里千万注意了，千万不能用type.Mashup_category
         //因为我们的图是根据每个mashup建立的，但是如果选择mashup的category，这些mashup有可能是会重复，或者不连通的，这一定是错误的
@@ -39,28 +39,24 @@ class ProgrammingWebApplicationTests {
 
         for(Map.Entry<String,Set<API>> entry:apisfromMashup.entrySet())
         {
+
             Set<String> stringset = new HashSet<>();
             Set<Integer> ApiIndexes = new HashSet<>();
             Set<API> set = entry.getValue();
             for(API api:set)
             {
-                stringset.add(api.getCategory().toLowerCase());
+                stringset.addAll(api.getTags());
                 ApiIndexes.add(api.getIndexInGraph());
             }
-
-            if(stringset.size() < mincategory)
+            if(stringset.size() < mintags)
             {
-                 continue;
+                continue;
             }
-            if(stringset.size() > maxcategory)
+            if(stringset.size() > maxtags)
             {
-                 continue;
+                continue;
             }
-
-
-
-
-
+            System.out.println("----------------------------------------------------------");
             String[] strings = stringset.toArray(new String[stringset.size()]);
             Set<API> resultset = g.searchbyStenierTree(strings,ii,true);
             Set<Integer> resultIntset = new HashSet<>(g.getResultlist());
@@ -70,40 +66,41 @@ class ProgrammingWebApplicationTests {
             unionset.addAll(resultIntset);
             unionset.retainAll(ApiIndexes);
             // 想要输出里面的结果的话可以去掉注释，我将依次输出api的名字和编号，结果集中api的编号
-            /*
+
             System.out.println(cnt);
-            System.out.print("API:");
+            System.out.print("这个Mashup中的API编号分别是:");
             System.out.println(ApiIndexes);
-            System.out.print("stringset:");
+            System.out.println("这个Mashup中所有API包含的所有Tags是:");
             System.out.println(stringset);
+            System.out.println("已经构造好了的斯坦纳树，这棵树的结点的API编号是");
             System.out.println(resultIntset);
-            */
-             //正常来说，下面这行不会触发，至少我测试的时候没触发，但是为了安全性还是加了
+
+            //正常来说，下面这行不会触发，至少我测试的时候没触发，但是为了安全性还是加了
             if(resultset == null)
                 continue;
             cnt++;
             // 广义命中率 交集元素个数/mashup中的api个数
             double accuracy = 1.0*unionset.size()/ApiIndexes.size();
             //下面的注释去掉就可以看结果，看一下是哪些api被用到了，这里其实挺重要的
-            /*
+            Set<String> resultStringSet = new HashSet<>();
             for(API apii:resultset)
             {
-                System.out.print(apii.getCategory().toLowerCase()+",");
+                resultStringSet.addAll(apii.getTags());
             }
-
-            System.out.println("");
-            //System.out.println(resultset);
-            System.out.print("union:");
+            System.out.println("斯坦纳树中包含的所有结点的tags集合是");
+            System.out.println(resultStringSet);
+            System.out.println("斯坦纳树结果集 和 Mashup的输入 的 交集，也就是说，被完全命中的API编号:");
             System.out.println(unionset);
 
-             */
+
             if(unionset.size() == ApiIndexes.size())
             {
                 hit++;
-                //System.out.println("完全命中");
+                System.out.println("本次实验完全命中");
             }
 
             EveryAPIhitting += accuracy;
+            System.out.println("----------------------------------------------------------");
         }
         System.out.println("广义命中率：");
         System.out.println(1.0*EveryAPIhitting/cnt);
@@ -123,7 +120,7 @@ class ProgrammingWebApplicationTests {
         //建好的图
         Graph g = new Graph(data);
         //测试查询命中率
-        testaccuracy(g,ii,2,2,true);
+        testaccuracyUsingTags(g,ii,9,9,true);
 
 
     }

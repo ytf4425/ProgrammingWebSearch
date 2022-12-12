@@ -18,7 +18,7 @@ import java.util.List;
 public class API extends ProgrammableWeb {
     @JsonIgnore
     private int indexInGraph;
-
+    private List<String> tags = new ArrayList<>();
     @JsonIgnore
     private List<Mashup> mashup = new ArrayList<>(); // 采用了此 API 的 Mashup 应用
 

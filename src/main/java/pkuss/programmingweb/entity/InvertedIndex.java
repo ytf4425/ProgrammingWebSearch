@@ -17,6 +17,7 @@ public class InvertedIndex {
     Map<String, Set<API>> apiCategoryInvertindex = new HashMap<>();
     Map<String, Set<API>> mashupNameInvertindex = new HashMap<>();
     Map<String, Set<API>> mashupCategoryInvertindex = new HashMap<>();
+    Map<String,Set<API>> tagsNameInvertindex = new HashMap<>();
 
     public void setMap(String keyword, API api, type t) {
         Map<String, Set<API>> invertindex = getInvertindex(t);
@@ -35,6 +36,8 @@ public class InvertedIndex {
                 return mashupNameInvertindex;
             case MASHUP_CATEGORY:
                 return mashupCategoryInvertindex;
+            case TAGS_NAME:
+                return tagsNameInvertindex;
             default:
                 return new HashMap<>();
         }

@@ -26,6 +26,13 @@ public class Graph {
     int maxnum;
     //dp数组
     double[][] dp;
+    //此数组用于dp初始化，记录所有初始化为0的状态码
+    //这是因为一个api有多个tags,那么这些tags如果都出现在关键词里，就需要组合初始状态
+    //比如一个api有a，b，c三个tags，但是搜索关键词中出现了a，b，那么a，b，ab三种状态都需要置为1
+    //这有一定的时间开销，但是这是没办法的事情，我们发现一个api最多69个tags,很可能会有一定的指数级时间开销
+    // 需要近似解决，不能初始化所有状态，因为后面状态压缩dp的事情，所以尽力记录状态即可
+    // 不会记录到所有状态，但是必须记录到 ab这种状态（满状态），这样满足题意：找到尽量少的api
+    int dpinit[];
     // SPFA算法用的queue
     Queue<Integer> queue;
     // vis数组用于SPFA算法中的判断
@@ -249,12 +256,13 @@ public class Graph {
         //dp数组,第一维只需要开到 Indexmap的大小+1就行，因为我们的编号从1开始，
         // dp第二维需要开到(1<<keyword数组大小)，表示状态
         maxnum = IndexMap.size() + 1;
-        type t = type.API_CATEGORY;
+        type t = type.TAGS_NAME;
         dp = new double[ maxnum ][1<<(keywords.length)];
         queue =new LinkedList<>();
         vis = new int[maxnum];
         pre = new int[maxnum][1<<(keywords.length)][2];
         res = new int[maxnum];
+        dpinit = new int[maxnum];
        // System.out.println(maxnum);
         //dp数组初始化为maxvalue
         for(int i=0;i<dp.length;i++)
@@ -288,15 +296,26 @@ public class Graph {
                     System.out.print(" ");
                     System.out.println(realIndex);
                      */
+                    //需要记录dpinit数组的值，为了之后进行组合初始化
+                    dpinit[graphIndex] |= (1<<(keywordIndex - 1));
+                    //这就是状态码了，这样记录只会记录线性空间的状态
+                    int status = dpinit[graphIndex];
                     // 1<<(keywordindex-1) 应该正好就是某个关键词对应的状态编号
-                    dp[graphIndex][1<<(keywordIndex - 1)] = 0;
+                    dp[graphIndex][status] = 0;
                     //这里可能会修改，第一次修改可能是因为一个api有多个tag
+                    pre[graphIndex][status][1] = 0;
+                    pre[graphIndex][status][0] = graphIndex;
+                    // 再记录一个单状态的情况，尽力记录，不能开指数级，不然时间复杂度太高
+                    dp[graphIndex][1<<(keywordIndex - 1)] = 0;
                     pre[graphIndex][1<<(keywordIndex - 1)][1] = 0;
                     pre[graphIndex][1<<(keywordIndex - 1)][0] = graphIndex;
+                    //这样，我们保证尽力满足状态
                 }
             }
             keywordIndex++;
         }
+
+
 
         for (int s = 1; s < (1 << keywords.length); s++) {
             for (int i = 1; i <= maxnum-1; i++) {

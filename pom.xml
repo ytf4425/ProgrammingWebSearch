@@ -50,6 +50,19 @@
             <artifactId>opencsv</artifactId>
             <version>5.0</version>
         </dependency>
+        <!-- 读取JSON -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.62</version>
+        </dependency>
+
+        <!-- 资源目录资源文件读取 -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
     </dependencies>
 
     <build>
