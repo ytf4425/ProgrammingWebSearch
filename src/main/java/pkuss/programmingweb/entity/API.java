@@ -37,6 +37,7 @@ public class API extends ProgrammableWeb {
         returnInfo.append("\n\tname: " + name);
         returnInfo.append("\n\tcategory: " + category);
         returnInfo.append("\n\turl: https://www.programmableweb.com" + url);
+        returnInfo.append("\n\ttags:"+tags);
         returnInfo.append("\n\tSubmit date: " + st);
         returnInfo.append("\n\tCorrected dead date: " + et);
         returnInfo.append("\n\tDead date provided in PW: " + oet);

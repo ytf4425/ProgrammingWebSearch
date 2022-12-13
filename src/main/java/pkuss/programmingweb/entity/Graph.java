@@ -1,5 +1,6 @@
 package pkuss.programmingweb.entity;
 
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,6 +45,8 @@ public class Graph {
     int[][][] pre;
     //resultlist 里面将会存储结果的所有编号
     List<Integer> resultlist;
+    //最小斯坦纳树的权值和
+    double minDpResult;
 
     public Graph(Data data) {
         this.data = data;
@@ -263,6 +266,9 @@ public class Graph {
         pre = new int[maxnum][1<<(keywords.length)][2];
         res = new int[maxnum];
         dpinit = new int[maxnum];
+        Set<API> resultset = new HashSet<>();
+        //resultlist已经注释过了，这里面会存储真正的节点编号，最后我们测试的时候会把这个东西取出来，非常重要的结果集
+        resultlist = new ArrayList<>();
        // System.out.println(maxnum);
         //dp数组初始化为maxvalue
         for(int i=0;i<dp.length;i++)
@@ -272,6 +278,7 @@ public class Graph {
                 dp[i][j] = Double.MAX_VALUE;
             }
         }
+
 
         List<Set<API>> apiSets = new ArrayList<>();
         for (String keyword : keywords) {
@@ -341,8 +348,8 @@ public class Graph {
             }
         }
         //System.out.println(apiSets);
-        Set<API> firstkeywordAPISets = apiSets.get(0);
-        double minDpResult = Double.MAX_VALUE;
+        //Set<API> firstkeywordAPISets = apiSets.get(0);
+        minDpResult = Double.MAX_VALUE;
         int mindpindex = -1;
         // 下面这些代码将会比较所有的 “树根” 所形成的斯坦纳树的大小
         // 外层循环：遍历所有关键词对应的apiSets，由于一个关键词可能对应多个api
@@ -367,12 +374,36 @@ public class Graph {
             }
         }
 
-        //System.out.println(minDpResult);
-        //resultlist已经注释过了，这里面会存储真正的节点编号，最后我们测试的时候会把这个东西取出来，非常重要的结果集
-        resultlist = new ArrayList<>();
-        //System.out.println("begin dfs");
+
         if(mindpindex == -1)
         {
+            //如果没找到resultset，有两种情况：
+            //1、情况1 由于我们只遍历了“有连边的结点”也就是1236个图中不孤立的结点，所以如果一个mashup内只有一个api，这个api是孤立的，不会进入我们算法的输入
+            //   这时候，我们需要遍历所有结点，找到那种孤立结点的解决方案，这时候，只会返回一个孤立结点
+            //2  情况2 这些关键词本身就不连通，比如wine和water，那么返回null即可
+            for(API api:vertices){
+                int tags_length = api.getTags().size();
+                int tags_cnt = 0;
+                List<String> tags = api.getTags();
+                for(String tag:tags)
+                {
+                    for(String keyword:keywords)
+                    {
+                        if(keyword.equalsIgnoreCase(tag))
+                        {
+                            tags_cnt++;
+                            break;
+                        }
+                    }
+                }
+                if(tags_cnt == keywords.length)
+                {
+                    minDpResult = 0;
+                    resultset.add(api);
+                    resultlist.add(api.getIndexInGraph());
+                    return resultset;
+                }
+            }
             //注意，如果你的所有关键词不是联通的，将会返回null
             return null;
         }
@@ -386,8 +417,11 @@ public class Graph {
             }
         }
         //找出所有api
-        Set<API> resultset = searchVertices(resultlist);
+        resultset = searchVertices(resultlist);
         return resultset;
+
+
+
     }
 
     //根据真正的节点编号，找到vertice数组（所有api）中对应的api
