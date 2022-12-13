@@ -18,7 +18,8 @@ import java.util.List;
 public class API extends ProgrammableWeb {
     @JsonIgnore
     private int indexInGraph;
-
+    private List<String> tags = new ArrayList<>();
+    @JsonIgnore
     private List<Mashup> mashup = new ArrayList<>(); // 采用了此 API 的 Mashup 应用
 
     public API(String[] line) {
@@ -42,9 +43,12 @@ public class API extends ProgrammableWeb {
         returnInfo.append("\n\tCorrected accessibility: " + oac);
         returnInfo.append("\n\tAccessibility provided in PW: " + ac);
         returnInfo.append("\n\tMashUps:");
+        /*
         for (Mashup mashupin : mashup) {
             returnInfo.append("\n\t\t" + mashupin);
         }
+
+         */
         return returnInfo.toString();
     }
 }
