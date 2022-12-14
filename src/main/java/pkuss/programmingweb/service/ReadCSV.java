@@ -1,4 +1,4 @@
-package pkuss.programmingweb.dao;
+package pkuss.programmingweb.service;
 
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
@@ -12,7 +12,6 @@ import pkuss.programmingweb.entity.ProgrammableWeb;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
@@ -28,13 +27,14 @@ public class ReadCSV {
         try (CSVReader readerCsv = new CSVReaderBuilder(new InputStreamReader(input)).withCSVParser(csvParser).withSkipLines(1).build()) {
             String[] line;
             while ((line = readerCsv.readNext()) != null) {
-                //Arrays.asList(lines).forEach(System.out::println);
-                Object[] methodArgs = new Object[]{line};
-                V api = vClass.getDeclaredConstructor(line.getClass()).newInstance(methodArgs);
-                map.put(api.getIndex(), api);
+                // choose correct map index
+                String indexString = line[1];  // for API
+                if (vClass == Mashup.class) indexString = line[2];  // for Mashup
+
+                V item = map.get(indexString);
+                if (item != null) item.set(line);
             }
-        } catch (IOException | CsvValidationException | NoSuchMethodException | InstantiationException |
-                 IllegalAccessException | InvocationTargetException e) {
+        } catch (IOException | CsvValidationException e) {
             e.printStackTrace();
         }
     }
@@ -49,10 +49,10 @@ public class ReadCSV {
                 String apiPath = lines[1];
                 Mashup mashup = Mashupmap.get(mashupName);
                 API api = APImap.get(apiPath);
-                if (api != null && mashup != null) {
-                    api.getMashup().add(mashup);
-                    mashup.getRelatedApis().add(api);
-                }
+
+                if (api == null || mashup == null) continue;
+                api.getMashup().add(mashup);
+                mashup.getRelatedApis().add(api);
             }
         } catch (IOException | CsvValidationException e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package pkuss.programmingweb.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
  * Description: API实体类
  */
 
+@NoArgsConstructor
 @Getter
 @Setter
 public class API extends ProgrammableWeb {
@@ -47,21 +49,19 @@ public class API extends ProgrammableWeb {
     public String toString() {
         StringBuilder returnInfo = new StringBuilder("API:");
         returnInfo.append("\n\tname: " + title);
-        returnInfo.append("\n\tcategory: " + tags);
+        returnInfo.append("\n\ttags: " + tags);
         returnInfo.append("\n\turl: https://www.programmableweb.com" + url);
-        returnInfo.append("\n\ttags:"+tags);
         returnInfo.append("\n\tSubmit date: " + st);
         returnInfo.append("\n\tCorrected dead date: " + et);
         returnInfo.append("\n\tDead date provided in PW: " + oet);
         returnInfo.append("\n\tCorrected accessibility: " + oac);
         returnInfo.append("\n\tAccessibility provided in PW: " + ac);
-        returnInfo.append("\n\tMashUps:");
         /*
+        returnInfo.append("\n\tMashUps:");
         for (Mashup mashupin : mashup) {
             returnInfo.append("\n\t\t" + mashupin);
         }
-
-         */
+        */
         return returnInfo.toString();
     }
 }

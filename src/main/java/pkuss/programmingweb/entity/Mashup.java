@@ -1,16 +1,20 @@
 package pkuss.programmingweb.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 @Getter
 @Setter
 public class Mashup extends ProgrammableWeb {
     @JsonIgnore
+    @JSONField(deserialize=false)   // We use csv rather than json to fill the List
     private List<API> relatedApis = new ArrayList<>(); // 此 Mashup 应用所用的 API
 
     List<String> categories;

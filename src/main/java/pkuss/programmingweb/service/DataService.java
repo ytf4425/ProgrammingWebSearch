@@ -1,10 +1,10 @@
 package pkuss.programmingweb.service;
 
-import pkuss.programmingweb.entity.ActiveApi;
-import pkuss.programmingweb.entity.ActiveMashup;
+import pkuss.programmingweb.entity.API;
+import pkuss.programmingweb.entity.Mashup;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Author: SongXJ
@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface DataService {
     // 从JSON中加载Mashup数据
-    List<ActiveMashup> loadMashupFromJson() throws IOException;
-    List<ActiveApi> loadAPIFromJson() throws IOException;
+    Map<String, Mashup> loadMashupFromJson(String dataPath, Boolean active) throws IOException;
+
+    Map<String, API> loadAPIFromJson(String dataPath, Boolean active) throws IOException;
 }
