@@ -16,9 +16,21 @@ import java.util.List;
 @Getter
 @Setter
 public class API extends ProgrammableWeb {
+    List<version> versions;
+    @Getter
+    @Setter
+    class version {
+        String version_title;
+        String style;
+        String version;
+        String status;
+        String submit_date;
+        String version_link;    // For Active APIs
+    }
+
     @JsonIgnore
     private int indexInGraph;
-    private List<String> tags = new ArrayList<>();
+//    private List<String> tags = new ArrayList<>();
     @JsonIgnore
     private List<Mashup> mashup = new ArrayList<>(); // 采用了此 API 的 Mashup 应用
 
@@ -34,8 +46,8 @@ public class API extends ProgrammableWeb {
     @Override
     public String toString() {
         StringBuilder returnInfo = new StringBuilder("API:");
-        returnInfo.append("\n\tname: " + name);
-        returnInfo.append("\n\tcategory: " + category);
+        returnInfo.append("\n\tname: " + title);
+        returnInfo.append("\n\tcategory: " + tags);
         returnInfo.append("\n\turl: https://www.programmableweb.com" + url);
         returnInfo.append("\n\ttags:"+tags);
         returnInfo.append("\n\tSubmit date: " + st);

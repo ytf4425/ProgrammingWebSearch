@@ -51,7 +51,7 @@ public class ReadCSV {
                 API api = APImap.get(apiPath);
                 if (api != null && mashup != null) {
                     api.getMashup().add(mashup);
-                    mashup.getApis().add(api);
+                    mashup.getRelatedApis().add(api);
                 }
             }
         } catch (IOException | CsvValidationException e) {

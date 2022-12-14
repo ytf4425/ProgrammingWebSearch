@@ -80,7 +80,7 @@ public class Graph {
         InvertedIndexMap = new HashMap<>();
         //建立邻接表
         for (Mashup mashup : data.getMashupmap().values()) {
-            List<API> apis = mashup.getApis();
+            List<API> apis = mashup.getRelatedApis();
             for (int i = 0; i < apis.size(); i++) {
                 for (int j = i + 1; j < apis.size(); j++) {
                     addEdge(apis.get(i), apis.get(j));
