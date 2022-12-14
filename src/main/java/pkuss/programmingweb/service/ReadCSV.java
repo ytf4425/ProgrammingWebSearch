@@ -12,6 +12,7 @@ import pkuss.programmingweb.entity.ProgrammableWeb;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
@@ -31,10 +32,19 @@ public class ReadCSV {
                 String indexString = line[1];  // for API
                 if (vClass == Mashup.class) indexString = line[2];  // for Mashup
 
-                V item = map.get(indexString);
-                if (item != null) item.set(line);
+                if (map.containsKey(indexString)) {
+                    V item = map.get(indexString);
+                    if (item != null)
+                        item.set(line);
+                } else {
+                    // Add missing items in the json file
+                    Object[] methodArgs = new Object[]{line};
+                    V item = vClass.getDeclaredConstructor(line.getClass()).newInstance(methodArgs);
+                    map.put(item.getIndex(), item);
+                }
             }
-        } catch (IOException | CsvValidationException e) {
+        } catch (IOException | CsvValidationException | NoSuchMethodException | InvocationTargetException |
+                 InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

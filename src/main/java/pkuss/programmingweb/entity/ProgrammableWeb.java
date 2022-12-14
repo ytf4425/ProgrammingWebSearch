@@ -44,6 +44,8 @@ public class ProgrammableWeb {
     protected String oac; // Corrected accessibility
 
     public ProgrammableWeb(String[] line) {
+        setUrl(line[1]);
+        setTitle(line[2]);
         set(line);
     }
 
@@ -52,8 +54,6 @@ public class ProgrammableWeb {
     }
 
     public void set(String[] line) {
-//        setUrl(line[1]);
-//        setName(line[2]);
         setSt(line[3]);
         setEt(line[4]);
         setOet(line[5]);

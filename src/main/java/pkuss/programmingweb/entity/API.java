@@ -19,6 +19,7 @@ import java.util.List;
 @Setter
 public class API extends ProgrammableWeb {
     List<version> versions;
+
     @Getter
     @Setter
     class version {
@@ -38,6 +39,14 @@ public class API extends ProgrammableWeb {
 
     public API(String[] line) {
         super(line);
+
+        // for missing items in the json file
+        String category = line[6];
+        if (tags == null)
+            tags = new ArrayList<>();
+        if (!category.equals("None") && !tags.contains(category)) {
+            tags.add(category);
+        }
     }
 
     @JsonIgnore
