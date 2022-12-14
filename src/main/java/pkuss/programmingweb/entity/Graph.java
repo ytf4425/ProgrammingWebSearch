@@ -259,7 +259,7 @@ public class Graph {
         //dp数组,第一维只需要开到 Indexmap的大小+1就行，因为我们的编号从1开始，
         // dp第二维需要开到(1<<keyword数组大小)，表示状态
         maxnum = IndexMap.size() + 1;
-        type t = type.TAGS_NAME;
+        type t = type.API_TAGS;
         dp = new double[ maxnum ][1<<(keywords.length)];
         queue =new LinkedList<>();
         vis = new int[maxnum];
