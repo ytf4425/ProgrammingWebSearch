@@ -53,8 +53,10 @@ public class Data {
         for (API api : APImap.values()) {
             // lowercase all tags & add API tags to inverted index
             List<String> apiTags = api.getTags();
-            for (String apiTag : apiTags) {
-                ii.setMap(apiTag.toLowerCase(), api, type.API_CATEGORY);
+            for (int i = 0; i < apiTags.size(); i++) {
+                String lower = apiTags.get(i).toLowerCase();
+                apiTags.set(i, lower);
+                ii.setMap(lower, api, type.API_CATEGORY);
             }
 
             // lowercase API name & add API name to inverted index

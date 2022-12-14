@@ -298,12 +298,22 @@ class ProgrammingWebApplicationTests {
                 cnt_set++;
                 if(cnt_set == 1)
                 {
-                    stringsetfirstandlast.add(api.getCategory());
+                    String c;
+                    if(api.getTags().size()==0)
+                        c="None";
+                    else
+                        c=api.getTags().get(0);
+                    stringsetfirstandlast.add(c);
                     ApiIndexesfirstandlast.add(api.getIndexInGraph());
                 }
                 if(cnt_set == set.size())
                 {
-                    stringsetfirstandlast.add(api.getCategory());
+                    String c;
+                    if(api.getTags().size()==0)
+                        c="None";
+                    else
+                        c=api.getTags().get(0);
+                    stringsetfirstandlast.add(c);
                     ApiIndexesfirstandlast.add(api.getIndexInGraph());
                 }
                 stringset.addAll(api.getTags());
@@ -433,7 +443,8 @@ class ProgrammingWebApplicationTests {
         //建好的图
         Graph g = new Graph(data);
         //测试查询命中率
-        testaccuracyFirstTagandLastTag(g,ii,3,3,true);
+//        testaccuracyFirstTagandLastTag(g,ii,3,3,true);
+        testaccuracyUsingTags(g,ii,3,3,true);
         /*
         String[] tags = {"analytics", "images", "meme", "identity", "mobile", "recognition", "media", "storage", "big data", "machine learning", "content", "applications"};
         Set<API> res = g.searchbyStenierTree(tags,ii,true);
