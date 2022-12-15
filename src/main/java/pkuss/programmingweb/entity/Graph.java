@@ -1,6 +1,5 @@
 package pkuss.programmingweb.entity;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -382,9 +381,9 @@ public class Graph {
             //   这时候，我们需要遍历所有结点，找到那种孤立结点的解决方案，这时候，只会返回一个孤立结点
             //2  情况2 这些关键词本身就不连通，比如wine和water，那么返回null即可
             for(API api:vertices){
-                int tags_length = api.getTags().size();
+                int tags_length = api.getLowercaseTags().size();
                 int tags_cnt = 0;
-                List<String> tags = api.getTags();
+                List<String> tags = api.getLowercaseTags();
                 for(String tag:tags)
                 {
                     for(String keyword:keywords)

@@ -45,7 +45,7 @@ public class API extends ProgrammableWeb {
         if (tags == null)
             tags = new ArrayList<>();
         if (!category.equals("None") && !tags.contains(category)) {
-            tags.add(category.toLowerCase());
+            tags.add(category);
         }
     }
 

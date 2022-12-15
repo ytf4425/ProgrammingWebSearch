@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -51,6 +52,14 @@ public class ProgrammableWeb {
 
     public String getIndex() {
         return null;
+    }
+
+    public List<String> getLowercaseTags() {
+        List<String> result = new ArrayList<>();
+        for (String tag : tags) {
+            result.add(tag.toLowerCase());
+        }
+        return result;
     }
 
     public void set(String[] line) {
