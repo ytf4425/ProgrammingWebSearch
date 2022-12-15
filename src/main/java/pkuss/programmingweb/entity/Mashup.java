@@ -1,18 +1,26 @@
 package pkuss.programmingweb.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 @Getter
 @Setter
 public class Mashup extends ProgrammableWeb {
     @JsonIgnore
-    private List<API> apis = new ArrayList<>(); // 此 Mashup 应用所用的 API
+    @JSONField(deserialize=false)   // We use csv rather than json to fill the List
+    private List<API> relatedApis = new ArrayList<>(); // 此 Mashup 应用所用的 API
 
+    List<String> categories;
+    String mashup_type;
+    String date;
+    String page_url;    // For Deadpoll Mashups
 
     public Mashup(String[] line) {
         super(line);
@@ -20,13 +28,13 @@ public class Mashup extends ProgrammableWeb {
 
     @JsonIgnore
     public String getIndex() {
-        return getName();
+        return getTitle();
     }
 
     @Override
     public String toString() {
-        StringBuilder returnInfo = new StringBuilder(name);
-        returnInfo.append("\n\t\t\tcategory: " + category);
+        StringBuilder returnInfo = new StringBuilder(title);
+        returnInfo.append("\n\t\t\ttags: " + tags);
         returnInfo.append("\n\t\t\turl: " + url);
         returnInfo.append("\n\t\t\tSubmit date: " + st);
         returnInfo.append("\n\t\t\tCorrected dead date: " + et);

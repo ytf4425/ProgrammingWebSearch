@@ -5,47 +5,48 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
-import pkuss.programmingweb.entity.ActiveApi;
-import pkuss.programmingweb.entity.ActiveMashup;
+import pkuss.programmingweb.entity.API;
+import pkuss.programmingweb.entity.Mashup;
+import pkuss.programmingweb.entity.ProgrammableWeb;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author: SongXJ
  * Date: 2022/12/8 22:10
- * Description: 读取数据服务的接口实现
+ * Description: 读取 JSON 数据服务的接口实现
  */
 
+@Service
 public class DataServiceImpl implements DataService {
-    @Override
-    // 从JSON中加载Mashup数据
-    public List<ActiveMashup> loadMashupFromJson() throws IOException {
-        String sourcePath = "static" + File.separator + "active_mashups_data.txt";
-        File file = ResourceUtils.getFile("classpath:" + sourcePath);
+    private <T extends ProgrammableWeb> List<T> readJsonFile(String dataPath, Class<T> dataClass) throws IOException {
+        File file = ResourceUtils.getFile("classpath:" + dataPath);
         String json = FileUtils.readFileToString(file, "UTF-8");
-        return JSON.parseArray(json, ActiveMashup.class);
+        return JSON.parseArray(json, dataClass);
     }
 
-    public List<ActiveApi> loadAPIFromJson() throws IOException {
-        String sourcePath = "static" +File.separator + "active_apis_data.txt";
-        File file = ResourceUtils.getFile("classpath:" + sourcePath);
-        String json = FileUtils.readFileToString(file, "UTF-8");
-        List<ActiveApi> result = JSON.parseArray(json, ActiveApi.class);
-        for(ActiveApi api:result)
-        {
-            List<String> tmp = new ArrayList<>();
-            if(api!=null)
-            {
-                for(String tag:api.getTags())
-                {
-                    tmp.add(tag.toLowerCase());
-                }
-                if(tmp!=null) api.setTags(new ArrayList<String>(tmp));
-            }
+    private <T extends ProgrammableWeb> Map<String, T> loadFromJson(String dataPath, Boolean active, Class<T> iClass) throws IOException {
+        Map<String, T> result = new HashMap<>();
+        List<T> items = readJsonFile(dataPath, iClass);
+        for (T item : items) {
+            if (item == null) continue;
+            item.setActive(active);                 // set active state
+            item.setUrl(item.getUrl().trim());      // remove "\n" at the end of URL
+            result.put(item.getIndex(), item);      // add to Map<index, item>
         }
+
         return result;
+    }
+
+    public Map<String, API> loadAPIFromJson(String dataPath, Boolean active) throws IOException {
+        return loadFromJson(dataPath, active, API.class);
+    }
+
+    public Map<String, Mashup> loadMashupFromJson(String dataPath, Boolean active) throws IOException {
+        return loadFromJson(dataPath, active, Mashup.class);
     }
 }

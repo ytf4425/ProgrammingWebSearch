@@ -1,6 +1,5 @@
 package pkuss.programmingweb.entity;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -80,7 +79,7 @@ public class Graph {
         InvertedIndexMap = new HashMap<>();
         //建立邻接表
         for (Mashup mashup : data.getMashupmap().values()) {
-            List<API> apis = mashup.getApis();
+            List<API> apis = mashup.getRelatedApis();
             for (int i = 0; i < apis.size(); i++) {
                 for (int j = i + 1; j < apis.size(); j++) {
                     addEdge(apis.get(i), apis.get(j));
@@ -259,7 +258,7 @@ public class Graph {
         //dp数组,第一维只需要开到 Indexmap的大小+1就行，因为我们的编号从1开始，
         // dp第二维需要开到(1<<keyword数组大小)，表示状态
         maxnum = IndexMap.size() + 1;
-        type t = type.TAGS_NAME;
+        type t = type.API_TAGS;
         dp = new double[ maxnum ][1<<(keywords.length)];
         queue =new LinkedList<>();
         vis = new int[maxnum];
@@ -382,9 +381,9 @@ public class Graph {
             //   这时候，我们需要遍历所有结点，找到那种孤立结点的解决方案，这时候，只会返回一个孤立结点
             //2  情况2 这些关键词本身就不连通，比如wine和water，那么返回null即可
             for(API api:vertices){
-                int tags_length = api.getTags().size();
+                int tags_length = api.getLowercaseTags().size();
                 int tags_cnt = 0;
-                List<String> tags = api.getTags();
+                List<String> tags = api.getLowercaseTags();
                 for(String tag:tags)
                 {
                     for(String keyword:keywords)
@@ -472,6 +471,4 @@ public class Graph {
        }
         return ret.toString();
     }
-
-
 }
