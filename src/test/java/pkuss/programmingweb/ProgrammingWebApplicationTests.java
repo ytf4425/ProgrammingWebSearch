@@ -1,6 +1,5 @@
 package pkuss.programmingweb;
 
-import org.hamcrest.Condition;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import pkuss.programmingweb.entity.*;
@@ -45,7 +44,7 @@ class ProgrammingWebApplicationTests {
             Set<API> set = entry.getValue();
             for(API api:set)
             {
-                stringset.addAll(api.getTags());
+                stringset.addAll(api.getLowercaseTags());
                 ApiIndexes.add(api.getIndexInGraph());
             }
             if(stringset.size() < mintags)
@@ -144,15 +143,15 @@ class ProgrammingWebApplicationTests {
                 cnt_set++;
                 if(cnt_set == 1)
                 {
-                    stringsetfirstandlast.addAll(api.getTags());
+                    stringsetfirstandlast.addAll(api.getLowercaseTags());
                     ApiIndexesfirstandlast.add(api.getIndexInGraph());
                 }
                 if(cnt_set == set.size())
                 {
-                    stringsetfirstandlast.addAll(api.getTags());
+                    stringsetfirstandlast.addAll(api.getLowercaseTags());
                     ApiIndexesfirstandlast.add(api.getIndexInGraph());
                 }
-                stringset.addAll(api.getTags());
+                stringset.addAll(api.getLowercaseTags());
                 ApiIndexes.add(api.getIndexInGraph());
             }
             if(stringset.size() < mintags)
@@ -298,15 +297,25 @@ class ProgrammingWebApplicationTests {
                 cnt_set++;
                 if(cnt_set == 1)
                 {
-                    stringsetfirstandlast.add(api.getCategory());
+                    String c;
+                    if(api.getLowercaseTags().size()==0)
+                        c="None";
+                    else
+                        c=api.getLowercaseTags().get(0);
+                    stringsetfirstandlast.add(c);
                     ApiIndexesfirstandlast.add(api.getIndexInGraph());
                 }
                 if(cnt_set == set.size())
                 {
-                    stringsetfirstandlast.add(api.getCategory());
+                    String c;
+                    if(api.getLowercaseTags().size()==0)
+                        c="None";
+                    else
+                        c=api.getLowercaseTags().get(0);
+                    stringsetfirstandlast.add(c);
                     ApiIndexesfirstandlast.add(api.getIndexInGraph());
                 }
-                stringset.addAll(api.getTags());
+                stringset.addAll(api.getLowercaseTags());
                 ApiIndexes.add(api.getIndexInGraph());
             }
             if(stringset.size() < mintags)
@@ -433,7 +442,9 @@ class ProgrammingWebApplicationTests {
         //建好的图
         Graph g = new Graph(data);
         //测试查询命中率
-        testaccuracyFirstTagandLastTag(g,ii,3,3,true);
+//        testaccuracyFirstTagandLastTag(g,ii,3,3,true);
+//        testaccuracyUsingTags(g,ii,3,3,true);
+        testaccuracyFirstApiandLastApi(g,ii,3,3,true);
         /*
         String[] tags = {"analytics", "images", "meme", "identity", "mobile", "recognition", "media", "storage", "big data", "machine learning", "content", "applications"};
         Set<API> res = g.searchbyStenierTree(tags,ii,true);

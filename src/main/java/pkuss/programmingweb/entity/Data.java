@@ -1,13 +1,11 @@
 package pkuss.programmingweb.entity;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.metrics.StartupStep;
-import pkuss.programmingweb.dao.ReadCSV;
 import pkuss.programmingweb.service.DataService;
 import pkuss.programmingweb.service.DataServiceImpl;
+import pkuss.programmingweb.service.ReadCSV;
 
-import javax.annotation.Resource;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -20,9 +18,6 @@ public class Data {
     Map<String, API> APImap = new HashMap<>();
     Map<String, Mashup> Mashupmap = new HashMap<>();
     private DataService dataService = new DataServiceImpl();
-    private InputStream Api_file_path = new ClassPathResource("static/api_nodes_estimator.csv").getInputStream();
-    private InputStream Mashup_file_path = new ClassPathResource("static/mashup_nodes_estimator.csv").getInputStream();
-    private InputStream M_A_file_path = new ClassPathResource("static/m-a_edges.csv").getInputStream();
 
     public Data(InvertedIndex ii) throws IOException {
         this.ii = ii;
@@ -30,55 +25,64 @@ public class Data {
     }
 
     private void initData() throws IOException {
-        ReadCSV.readContent(getApi_file_path(), getAPImap(), API.class);
-        ReadCSV.readContent(getMashup_file_path(), getMashupmap(), Mashup.class);
-        ReadCSV.readM_a(getM_A_file_path(), getMashupmap(), getAPImap());
-        List<ActiveApi> RawAPIlist = dataService.loadAPIFromJson();
-        for (API api : getAPImap().values()) {
-            api.setCategory(api.getCategory().toLowerCase());
-            // add API basic information to inverted index
-            String apiCategory = api.getCategory();
-            ii.setMap(apiCategory.toLowerCase(), api, type.API_CATEGORY);
+        // load active_apis_data.txt to APImap
+        String activeApiDataPath = "static" + File.separator + "active_apis_data.txt";
+        APImap.putAll(dataService.loadAPIFromJson(activeApiDataPath, true));
 
-            String apiName = api.getName();
-            ii.setMap(apiName.toLowerCase(), api, type.API_NAME);
+        // load deadpool_apis_data.txt to APImap
+        String deadpoolApiDataPath = "static" + File.separator + "deadpool_apis_data.txt";
+        APImap.putAll(dataService.loadAPIFromJson(deadpoolApiDataPath, false));
 
-            // add related Mashup App information to inverted index
-            for (Mashup mashup : api.getMashup()) {
-                String mashupCategory = mashup.getCategory();
-                ii.setMap(mashupCategory.toLowerCase(), api, type.MASHUP_CATEGORY);
-                String mashupName = mashup.getName();
-                //System.out.println(mashupName);
+        // load active_mashups_data.txt to Mashupmap
+        String activeMashupsDataPath = "static" + File.separator + "active_mashups_data.txt";
+        Mashupmap.putAll(dataService.loadMashupFromJson(activeMashupsDataPath, true));
+
+        // load deadpool_mashups_data.txt to Mashupmap
+        String deadpoolMashupsDataPath = "static" + File.separator + "deadpool_mashups_data.txt";
+        Mashupmap.putAll(dataService.loadMashupFromJson(deadpoolMashupsDataPath, false));
+
+        // load CSVs to APImap & Mashupmap
+        InputStream apiFile = new ClassPathResource("static/api_nodes_estimator.csv").getInputStream();
+        ReadCSV.readContent(apiFile, APImap, API.class);
+        InputStream mashupFile = new ClassPathResource("static/mashup_nodes_estimator.csv").getInputStream();
+        ReadCSV.readContent(mashupFile, Mashupmap, Mashup.class);
+        InputStream MAPairFile = new ClassPathResource("static/m-a_edges.csv").getInputStream();
+        ReadCSV.readM_a(MAPairFile, Mashupmap, APImap);
+
+        // create inverted index
+        for (API api : APImap.values()) {
+            // lowercase all tags & add API tags to inverted index
+            List<String> apiTags = api.getLowercaseTags();
+            for (String apiTag : apiTags) {
+                ii.setMap(apiTag, api, type.API_TAGS);
+            }
+
+            // lowercase API name & add API name to inverted index
+            String apiName = api.getTitle().toLowerCase();
+            for (String keyword : apiName.split(" "))
+                ii.setMap(keyword, api, type.API_NAME);
+        }
+
+        // add apis related with Mashup to mashupTitle-apis inverted index
+        for (Mashup mashup : Mashupmap.values()) {
+//            List<String> mashupCategory = mashup.getCategories();
+//
+//            for (int i = 0; i < mashupCategory.size(); i++) {
+//                String lowerCategory = mashupCategory.get(i).toLowerCase();
+//                mashupCategory.set(i, lowerCategory);
+//
+//                List<API> mashupAPI=mashup.getRelatedApis();
+//                for (API api : mashupAPI) {
+//                    ii.setMap(lowerCategory, api, type.MASHUP_CATEGORY);
+//                }
+//            }
+            String mashupName = mashup.getTitle();
+            List<API> mashupAPI = mashup.getRelatedApis();
+            for (API api : mashupAPI) {
                 ii.setMap(mashupName.toLowerCase(), api, type.MASHUP_NAME);
             }
         }
-        for(ActiveApi api:RawAPIlist)
-        {
-            if(api == null)
-                continue;
-            String url = api.getUrl().trim();
-            API Api_in_map = null;
-            if(url!=null) Api_in_map = APImap.get(url);
-            List<String> tags = api.getTags();
-            if(Api_in_map != null)
-            {
-                for(String tag:tags)
-                {
-                    Api_in_map.getTags().add(tag);
-                }
-                for(String tag:tags)
-                {
-                    ii.setMap(tag.toLowerCase(),Api_in_map,type.TAGS_NAME);
-                }
-            }
-        }
-        for(API api:APImap.values())
-        {
-            if(api.getTags().isEmpty())
-            {
-                api.getTags().add(api.getCategory());
-                ii.setMap(api.getCategory(),api,type.TAGS_NAME);
-            }
-        }
+//
+//        System.out.println("ok");
     }
 }
